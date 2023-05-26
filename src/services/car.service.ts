@@ -1,10 +1,8 @@
 import { HttpException } from '@/exceptions/httpException';
-import { Car } from '@/interfaces/cars.interface';
+import { Car, ID_NR_LEN } from '@/interfaces/cars.interface';
 import { CarModel } from '@/models/cars.model';
 import { generateNumber } from '@/utils/number';
 import { Service } from 'typedi';
-
-const ID_NR_LEN = 9;
 
 @Service()
 export class CarService {
@@ -61,7 +59,7 @@ export class CarService {
   }
 
   protected async validateId(input: string): Promise<boolean> {
-    const pattern = /^C\d{10}$/;
+    const pattern = new RegExp('^C\\d{' + (ID_NR_LEN + 1) + '}$');
     if (!pattern.test(input)) {
       return false;
     }

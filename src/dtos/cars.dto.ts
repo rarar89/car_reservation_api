@@ -1,7 +1,8 @@
-import { CarMake } from '@/interfaces/cars.interface';
-import { IsEmail, IsString, IsNotEmpty, MinLength, MaxLength, IsEnum } from 'class-validator';
+import { CarMake, ID_NR_LEN } from '@/interfaces/cars.interface';
+import { IsNotEmpty, IsEnum, Length } from 'class-validator';
 
 export class CreateCarDto {
+  @Length(ID_NR_LEN + 1)
   public id?: string;
   @IsNotEmpty()
   @IsEnum(CarMake)
