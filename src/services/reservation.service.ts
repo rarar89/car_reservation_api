@@ -1,6 +1,6 @@
 import { HttpException } from '@/exceptions/httpException';
 import { Reservation } from '@/interfaces/reservations.interface';
-import { CarReservation } from '@/models/reservations.model';
+import { ReservationModel } from '@/models/reservations.model';
 import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid';
 
@@ -12,7 +12,7 @@ export class ReservationService {
   public async getUpcomingReservations(): Promise<Reservation[]> {
     const dateNow = new Date();
 
-    return CarReservation.filter(c => c.dateFrom > dateNow);
+    return ReservationModel.filter(c => c.dateFrom > dateNow);
   }
 
   public async addReservation(data: Reservation): Promise<Reservation> {
@@ -28,7 +28,7 @@ export class ReservationService {
       ...data,
     };
 
-    CarReservation.push(newReservation);
+    ReservationModel.push(newReservation);
     return newReservation;
   }
 
@@ -53,7 +53,7 @@ export class ReservationService {
   }
 
   protected async isReserved(carId: string, dateFrom: Date, dateTo: Date): Promise<boolean> {
-    const takenCar = CarReservation.filter(
+    const takenCar = ReservationModel.filter(
       c => c.carId === carId && ((c.dateFrom > dateFrom && dateFrom < c.dateTo) || (c.dateFrom > dateTo && dateTo < c.dateTo)),
     );
 

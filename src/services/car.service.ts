@@ -39,9 +39,9 @@ export class CarService {
   }
 
   public async updateCar(id: string, data: Car): Promise<Car> {
-    let carToUpdate = await this.findCarById(id);
+    const carIndx = CarModel.findIndex((car: Car) => car.id === id);
 
-    if (!carToUpdate) {
+    if (!carIndx) {
       throw new HttpException(404, 'Car not found');
     }
 
@@ -49,9 +49,9 @@ export class CarService {
       throw new HttpException(400, 'Incorrect car id provided');
     }
 
-    carToUpdate = data;
+    CarModel[carIndx] = data;
 
-    return carToUpdate;
+    return data;
   }
 
   protected generateId(): string {
