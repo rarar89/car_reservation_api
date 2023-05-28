@@ -15,9 +15,9 @@ export class CarsRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.car.getCars);
-    this.router.get(`${this.path}/:id(\\d+)`, this.car.getCar);
+    this.router.get(`${this.path}/:id`, this.car.getCar);
     this.router.post(`${this.path}`, ValidationMiddleware(CreateCarDto), this.car.createCar);
-    this.router.put(`${this.path}/:id(\\d+)`, ValidationMiddleware(UpdateCarDto), this.car.updateCar);
-    this.router.delete(`${this.path}/:id(\\d+)`, this.car.deleteCar);
+    this.router.put(`${this.path}/:id`, ValidationMiddleware(UpdateCarDto), this.car.updateCar);
+    this.router.delete(`${this.path}/:id`, this.car.deleteCar);
   }
 }

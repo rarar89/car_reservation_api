@@ -11,14 +11,25 @@ export class CarService {
   }
 
   public async findCarById(id: string): Promise<Car> {
-    return CarModel.find((car: Car) => car.id === id);
+    const data = CarModel.find((car: Car) => car.id === id);
+
+    if (!data) {
+      throw new HttpException(404, 'Car not found');
+    }
+
+    return data;
   }
 
   public async createCar(data: Car): Promise<Car> {
     if (!data.id) {
       data.id = this.generateId();
-    } else if (!(await this.validateId(data.id))) {
+    } else if (!this.validateId(data.id)) {
       throw new HttpException(400, 'Incorrect car id provided');
+    }
+
+    const existingCar = CarModel.find((car: Car) => car.id === data.id);
+    if (existingCar) {
+      throw new HttpException(409, 'Car with a given id already exists');
     }
 
     CarModel.push(data);
@@ -41,12 +52,17 @@ export class CarService {
   public async updateCar(id: string, data: Car): Promise<Car> {
     const carIndx = CarModel.findIndex((car: Car) => car.id === id);
 
-    if (!carIndx) {
+    if (carIndx < 0) {
       throw new HttpException(404, 'Car not found');
     }
 
-    if (!(await this.validateId(data.id))) {
+    if (!this.validateId(data.id)) {
       throw new HttpException(400, 'Incorrect car id provided');
+    }
+
+    const existingCarIndx = CarModel.findIndex((car: Car) => car.id === id);
+    if (existingCarIndx && existingCarIndx !== carIndx) {
+      throw new HttpException(409, 'Car with a given id already exists');
     }
 
     CarModel[carIndx] = data;
@@ -64,8 +80,6 @@ export class CarService {
       return false;
     }
 
-    const existingCar = await this.findCarById(input);
-
-    return !existingCar;
+    return true;
   }
 }

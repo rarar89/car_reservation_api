@@ -1,5 +1,5 @@
 export enum CarMake {
-  AlfaRomeo = 'Alfa Romeo',
+  AlfaRomeo = 'AlfaRomeo',
   Audi = 'Audi',
   BMW = 'BMW',
   Bentley = 'Bentley',

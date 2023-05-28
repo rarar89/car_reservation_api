@@ -10,6 +10,7 @@ export class CreateCarDto {
 }
 
 export class UpdateCarDto {
+  @Length(ID_NR_LEN + 1)
   public id?: string;
   @IsNotEmpty()
   @IsEnum(CarMake)
