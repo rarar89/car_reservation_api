@@ -18,7 +18,7 @@ export class ReservationService {
   public async addReservation(data: Reservation): Promise<Reservation> {
     const dateNow = new Date();
 
-    this.validateReservation(data);
+    await this.validateReservation(data);
 
     const newReservation = {
       ...{
@@ -33,18 +33,24 @@ export class ReservationService {
   }
 
   protected async validateReservation(data: Reservation) {
-    const dateNow = new Date();
+    const dateNowMs = new Date().getTime();
+    const dateFromMs = data.dateFrom.getTime();
+    const dateToMs = data.dateTo.getTime();
 
-    if (data.dateFrom >= data.dateTo) {
+    if (dateFromMs >= dateToMs) {
       throw new HttpException(400, 'Reservation starting date cannot be larger or equal to ending date');
     }
 
-    if (data.dateFrom.getTime() / 1000 - dateNow.getTime() / 1000 > MAX_AHEAD_TIME) {
+    if (dateFromMs / 1000 - dateNowMs / 1000 > MAX_AHEAD_TIME) {
       throw new HttpException(400, `Reservation can be made only ${MAX_AHEAD_TIME / 60 / 60} hours ahead`);
     }
 
-    if (data.dateTo.getTime() / 1000 - data.dateFrom.getTime() / 1000 > MAX_RESERVE_TIME) {
+    if (dateToMs / 1000 - dateFromMs / 1000 > MAX_RESERVE_TIME) {
       throw new HttpException(400, `Reservation can be made maximum for only ${MAX_RESERVE_TIME / 60 / 60} hours`);
+    }
+
+    if (dateToMs < dateNowMs || dateFromMs < dateNowMs) {
+      throw new HttpException(400, `Reservation cannot be made in the past`);
     }
 
     if (await this.isReserved(data.carId, data.dateFrom, data.dateTo)) {
@@ -53,8 +59,14 @@ export class ReservationService {
   }
 
   protected async isReserved(carId: string, dateFrom: Date, dateTo: Date): Promise<boolean> {
+    const dateFromTime = dateFrom.getTime();
+    const dateToTime = dateTo.getTime();
+
     const takenCar = ReservationModel.filter(
-      c => c.carId === carId && ((c.dateFrom > dateFrom && dateFrom < c.dateTo) || (c.dateFrom > dateTo && dateTo < c.dateTo)),
+      c =>
+        c.carId === carId &&
+        ((c.dateFrom.getTime() <= dateFromTime && dateFromTime <= c.dateTo.getTime()) ||
+          (c.dateFrom.getTime() <= dateToTime && dateToTime <= c.dateTo.getTime())),
     );
 
     return takenCar.length > 0;

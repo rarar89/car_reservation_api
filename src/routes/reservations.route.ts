@@ -16,6 +16,6 @@ export class ReservationsRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.reservation.getReservations);
-    this.router.post(`${this.path}`, ValidationMiddleware(CreateReservation), this.reservation.createCar);
+    this.router.post(`${this.path}`, ValidationMiddleware(CreateReservation), this.reservation.createReservation);
   }
 }

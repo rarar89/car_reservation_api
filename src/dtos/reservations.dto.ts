@@ -7,10 +7,10 @@ export class CreateReservation {
   public carId: string;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsString()
   public dateFrom: Date;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsString()
   public dateTo: Date;
 }

@@ -16,9 +16,11 @@ export class ReservationController {
     }
   };
 
-  public createCar = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public createReservation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const data: Reservation = req.body;
+      data.dateFrom = new Date(req.body.dateFrom);
+      data.dateTo = new Date(req.body.dateTo);
       const createdData: Reservation = await this.reservations.addReservation(data);
 
       res.status(201).json(createdData);
