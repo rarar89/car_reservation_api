@@ -48,7 +48,7 @@ paths:
         in: path
         description: Car Id
         required: true
-        type: integer
+        type: string
       responses:
         200:
           description: 'OK'
@@ -57,7 +57,7 @@ paths:
         500:
           description: 'Server Error'
 
-# [PUT] users/id
+# [PUT] cars/id
     put:
       tags:
       - cars
@@ -67,7 +67,7 @@ paths:
         in: path
         description: car Id
         required: true
-        type: integer
+        type: string
       - name: body
         in: body
         description: car Data
@@ -84,7 +84,7 @@ paths:
         500:
           description: 'Server Error'
 
-# [DELETE] users/id
+# [DELETE] cars/id
     delete:
       tags:
       - cars
@@ -94,7 +94,7 @@ paths:
         in: path
         description: cars Id
         required: true
-        type: integer
+        type: string
       responses:
         200:
           description: 'OK'
@@ -113,10 +113,10 @@ paths:
         500:
           description: 'Server Error'
 
-# [POST] users
+# [POST] reservations
     post:
       tags:
-      - cars
+      - reservations
       summary: Make a Reservation
       parameters:
       - name: body
@@ -124,7 +124,7 @@ paths:
         description: reservation Data
         required: true
         schema:
-          $ref: '#/definitions/reservation'
+          $ref: '#/definitions/reservations'
       responses:
         201:
           description: 'Created'
@@ -138,28 +138,34 @@ paths:
 
 # definitions
 definitions:
-  users:
+  cars:
     type: object
     required:
         - make
     properties:
       id:
         type: string
+        pattern: '^C\d{9}$'
         description: car id (C<number>)
       make:
         type: string
         description: car make
+        enum: [AlfaRomeo, Audi, BMW, Bentley, Cadillac, Chevrolet, Other]
   reservations:
     type: object
     required:
         - make
     properties:
-      id:
+      carId:
         type: string
+        pattern: '^C\d{9}$'
         description: car id (C<number>)
-      make:
+      dateFrom:
         type: string
-        description: car make
+        format: date-time
+      dateTo:
+        type: string
+        format: date-time
 
 schemes:
  - https
