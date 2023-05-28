@@ -23,11 +23,12 @@ beforeEach(() => {
   ];
 
   carService = new CarService();
+  carService.car = CarModel;
 });
 
 describe('TEST CarService', () => {
-  it('should create get a car', async () => {
-    const selectedCar = await carService.get('C0987654321');
+  it('should get a car', async () => {
+    const selectedCar = await carService.findCarById('C0987654321');
 
     expect(selectedCar).toEqual(CarModel[0]);
   });
@@ -51,7 +52,7 @@ describe('TEST CarService', () => {
   it('should update a car', async () => {
     const updatedData = { ...mockCarData, make: CarMake.Audi };
 
-    const updatedCar = await carService.updateCar('C1234567890', updatedData);
+    const updatedCar = await carService.updateCar('C0987654321', updatedData);
 
     expect(updatedCar).toEqual(updatedData);
     expect(CarModel.find(car => car.id === 'C1234567890')).toEqual(updatedData);

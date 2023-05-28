@@ -9,10 +9,12 @@ const MAX_AHEAD_TIME = 60 * 60 * 24;
 
 @Service()
 export class ReservationService {
+  public reservation = ReservationModel;
+
   public async getUpcomingReservations(): Promise<Reservation[]> {
     const dateNow = new Date();
 
-    return ReservationModel.filter(c => c.dateFrom.getTime() > dateNow.getTime());
+    return this.reservation.filter(c => c.dateFrom.getTime() > dateNow.getTime());
   }
 
   public async addReservation(data: Reservation): Promise<Reservation> {
@@ -28,7 +30,7 @@ export class ReservationService {
       ...data,
     };
 
-    ReservationModel.push(newReservation);
+    this.reservation.push(newReservation);
     return newReservation;
   }
 
@@ -62,7 +64,7 @@ export class ReservationService {
     const dateFromTime = dateFrom.getTime();
     const dateToTime = dateTo.getTime();
 
-    const takenCar = ReservationModel.filter(
+    const takenCar = this.reservation.filter(
       c =>
         c.carId === carId &&
         ((c.dateFrom.getTime() <= dateFromTime && dateFromTime <= c.dateTo.getTime()) ||

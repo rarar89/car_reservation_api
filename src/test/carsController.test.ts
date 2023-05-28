@@ -20,9 +20,9 @@ describe('TEST Car API', () => {
     });
   });
 
-  describe('[GET] /users/:id', () => {
+  describe('[GET] /car/:id', () => {
     it('response statusCode 200 /findOne', () => {
-      const carId = 'C12311441';
+      const carId = 'C123114419';
       const car: Car = CarModel.find(car => car.id === carId);
 
       return request(app.getServer()).get(`${route.path}/${carId}`).expect(200, car);
@@ -30,12 +30,13 @@ describe('TEST Car API', () => {
   });
 
   describe('[POST] /car', () => {
-    it('response should have the Create userData', () => {
+    it('response should have statusCode 201', () => {
       const carData: Car = {
+        id: 'C123456789',
         make: CarMake.Cadillac,
       };
 
-      return request(app.getServer()).post('/signup').send(carData).expect(201);
+      return request(app.getServer()).post(`${route.path}`).send(carData).expect(201);
     });
   });
 });

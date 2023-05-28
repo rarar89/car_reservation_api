@@ -1,15 +1,13 @@
 import request from 'supertest';
 import { App } from '@/app';
 import { ReservationsRoute } from '@/routes/reservations.route';
-import { Reservation } from '@/interfaces/reservations.interface';
-import { ReservationModel } from '@/models/reservations.model';
 
-const dateFromFirst = new Date(Date.now() + 1000000);
-
-// Mock ReservationModel
 jest.mock('@/models/reservations.model', () => {
   return {
-    default: [{ dateFrom: dateFromFirst }, { dateFrom: new Date(Date.now() - 1000000) }],
+    ReservationModel: [
+      { dateFrom: new Date(Date.now() + 1000000), dateTo: new Date(Date.now() + 2000000), carId: 'C123456789' },
+      { dateFrom: new Date(Date.now() - 1000000), dateTo: new Date(Date.now() - 500000), carId: 'C123456799' },
+    ],
   };
 });
 
@@ -19,7 +17,18 @@ describe('TEST Reservation API', () => {
 
   describe('[GET] /reservations', () => {
     it('response statusCode 200 /findAll', () => {
-      return request(app.getServer()).get(`${route.path}`).expect(200), [{ dateFrom: dateFromFirst }];
+      return request(app.getServer())
+        .get(`${route.path}`)
+        .expect(200)
+        .expect(res => {
+          if (!('carId' in res.body[0]) || res.body[0].carId !== 'C123456789') {
+            throw new Error('Invalid carId');
+          }
+
+          if (res.body.length !== 1) {
+            throw new Error('Invalid amount of reservations returned');
+          }
+        });
     });
   });
 });

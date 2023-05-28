@@ -6,12 +6,14 @@ import { Service } from 'typedi';
 
 @Service()
 export class CarService {
+  public car = CarModel;
+
   public async findAllCars(): Promise<Car[]> {
-    return CarModel;
+    return this.car;
   }
 
   public async findCarById(id: string): Promise<Car> {
-    const data = CarModel.find((car: Car) => car.id === id);
+    const data = this.car.find((car: Car) => car.id === id);
 
     if (!data) {
       throw new HttpException(404, 'Car not found');
@@ -27,30 +29,30 @@ export class CarService {
       throw new HttpException(400, 'Incorrect car id provided');
     }
 
-    const existingCar = CarModel.find((car: Car) => car.id === data.id);
+    const existingCar = this.car.find((car: Car) => car.id === data.id);
     if (existingCar) {
       throw new HttpException(409, 'Car with a given id already exists');
     }
 
-    CarModel.push(data);
+    this.car.push(data);
 
     return data;
   }
 
   public async deleteCar(id: string): Promise<boolean> {
-    const carIndx = CarModel.findIndex((car: Car) => car.id === id);
+    const carIndx = this.car.findIndex((car: Car) => car.id === id);
 
     if (carIndx < 0) {
       throw new HttpException(404, 'Car not found');
     }
 
-    CarModel.splice(carIndx, 1);
+    this.car.splice(carIndx, 1);
 
     return true;
   }
 
   public async updateCar(id: string, data: Car): Promise<Car> {
-    const carIndx = CarModel.findIndex((car: Car) => car.id === id);
+    const carIndx = this.car.findIndex((car: Car) => car.id === id);
 
     if (carIndx < 0) {
       throw new HttpException(404, 'Car not found');
@@ -60,12 +62,12 @@ export class CarService {
       throw new HttpException(400, 'Incorrect car id provided');
     }
 
-    const existingCarIndx = CarModel.findIndex((car: Car) => car.id === id);
+    const existingCarIndx = this.car.findIndex((car: Car) => car.id === id);
     if (existingCarIndx && existingCarIndx !== carIndx) {
       throw new HttpException(409, 'Car with a given id already exists');
     }
 
-    CarModel[carIndx] = data;
+    this.car[carIndx] = data;
 
     return data;
   }
