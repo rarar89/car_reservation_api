@@ -1,14 +1,14 @@
 tags:
-- name: users
-  description: users API
+- name: Car Reservation
+  description: Car Reservation API
 
 paths:
-# [GET] users
-  /users:
+# [GET] cars
+  /cars:
     get:
       tags:
-      - users
-      summary: Find All Users
+      - cars
+      summary: Find All Cars
       responses:
         200:
           description: 'OK'
@@ -18,15 +18,15 @@ paths:
 # [POST] users
     post:
       tags:
-      - users
-      summary: Add User
+      - cars
+      summary: Add Car
       parameters:
       - name: body
         in: body
-        description: user Data
+        description: car Data
         required: true
         schema:
-          $ref: '#/definitions/users'
+          $ref: '#/definitions/cars'
       responses:
         201:
           description: 'Created'
@@ -37,16 +37,16 @@ paths:
         500:
           description: 'Server Error'
 
-# [GET] users/id
-  /users/{id}:
+# [GET] cars/id
+  /cars/{id}:
     get:
       tags:
-      - users
-      summary: Find User By Id
+      - cars
+      summary: Find Car By Id
       parameters:
       - name: id
         in: path
-        description: User Id
+        description: Car Id
         required: true
         type: integer
       responses:
@@ -60,20 +60,20 @@ paths:
 # [PUT] users/id
     put:
       tags:
-      - users
-      summary: Update User By Id
+      - cars
+      summary: Update Car By Id
       parameters:
       - name: id
         in: path
-        description: user Id
+        description: car Id
         required: true
         type: integer
       - name: body
         in: body
-        description: user Data
+        description: car Data
         required: true
         schema:
-          $ref: '#/definitions/users'
+          $ref: '#/definitions/cars'
       responses:
         200:
           description: 'OK'
@@ -87,12 +87,12 @@ paths:
 # [DELETE] users/id
     delete:
       tags:
-      - users
-      summary: Delete User By Id
+      - cars
+      summary: Delete Car By Id
       parameters:
       - name: id
         in: path
-        description: user Id
+        description: cars Id
         required: true
         type: integer
       responses:
@@ -102,21 +102,64 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
+  /reservations:
+    get:
+      tags:
+      - reservations
+      summary: Find All Future Reservations
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+
+# [POST] users
+    post:
+      tags:
+      - cars
+      summary: Make a Reservation
+      parameters:
+      - name: body
+        in: body
+        description: reservation Data
+        required: true
+        schema:
+          $ref: '#/definitions/reservation'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
 
 # definitions
 definitions:
   users:
     type: object
     required:
-        - email
-        - password
+        - make
     properties:
-      email:
+      id:
         type: string
-        description: user Email
-      password:
+        description: car id (C<number>)
+      make:
         type: string
-        description: user Password
+        description: car make
+  reservations:
+    type: object
+    required:
+        - make
+    properties:
+      id:
+        type: string
+        description: car id (C<number>)
+      make:
+        type: string
+        description: car make
 
 schemes:
  - https
