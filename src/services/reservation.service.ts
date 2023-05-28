@@ -12,7 +12,7 @@ export class ReservationService {
   public async getUpcomingReservations(): Promise<Reservation[]> {
     const dateNow = new Date();
 
-    return ReservationModel.filter(c => c.dateFrom > dateNow);
+    return ReservationModel.filter(c => c.dateFrom.getTime() > dateNow.getTime());
   }
 
   public async addReservation(data: Reservation): Promise<Reservation> {

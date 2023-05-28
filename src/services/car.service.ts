@@ -17,7 +17,7 @@ export class CarService {
   public async createCar(data: Car): Promise<Car> {
     if (!data.id) {
       data.id = this.generateId();
-    } else if (!this.validateId(data.id)) {
+    } else if (!(await this.validateId(data.id))) {
       throw new HttpException(400, 'Incorrect car id provided');
     }
 
@@ -45,7 +45,7 @@ export class CarService {
       throw new HttpException(404, 'Car not found');
     }
 
-    if (!this.validateId(data.id)) {
+    if (!(await this.validateId(data.id))) {
       throw new HttpException(400, 'Incorrect car id provided');
     }
 
@@ -59,7 +59,7 @@ export class CarService {
   }
 
   protected async validateId(input: string): Promise<boolean> {
-    const pattern = new RegExp('^C\\d{' + (ID_NR_LEN + 1) + '}$');
+    const pattern = new RegExp('^C\\d{' + ID_NR_LEN + '}$');
     if (!pattern.test(input)) {
       return false;
     }
